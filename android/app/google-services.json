@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "139197430152",
+    "project_id": "firstproject-c30de",
+    "storage_bucket": "firstproject-c30de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139197430152:android:2c8686d816b4f8ba81223d",
+        "android_client_info": {
+          "package_name": "com.abhishek.krishna"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVN8ApUcHyzgBsRPCp1nRyDw-6_3s2cZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
