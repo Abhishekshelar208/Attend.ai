@@ -5,10 +5,21 @@ class Utils{
   void toastMessage(String message){
     Fluttertoast.showToast(
         msg: message,
-        toastLength: Toast.LENGTH_SHORT,
+        toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red.shade300,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+  }
+  void toastMessageBlue(String message){
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Color(0xFF39d2c0),
         textColor: Colors.white,
         fontSize: 16.0
     );

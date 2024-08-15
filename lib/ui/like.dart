@@ -1,9 +1,12 @@
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
-import 'add_attendance.dart';
+import '../utils/utils.dart';
 
 class LikePage extends StatefulWidget {
   const LikePage({Key? key}) : super(key: key);
@@ -12,14 +15,22 @@ class LikePage extends StatefulWidget {
   State<LikePage> createState() => _LikePageState();
 }
 
-class _LikePageState extends State<LikePage> {
+class _LikePageState extends State<LikePage> with SingleTickerProviderStateMixin {
   final databaseRef = FirebaseDatabase.instance.ref('Attendance');
   bool _isLoading = true;
+  late TabController _tabController;
+  String _selectedDivision = 'A'; // Default division
 
   @override
   void initState() {
     super.initState();
     loadData();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        _selectedDivision = _tabController.index == 0 ? 'A' : 'B';
+      });
+    });
   }
 
   void loadData() {
@@ -30,124 +41,195 @@ class _LikePageState extends State<LikePage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        title: const Text(
-          "Attendance Pro",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
       body: Container(
         height: double.infinity,
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
             colors: [
-              Colors.orange,
-              Colors.purpleAccent,
+              Color(0xFF4b39ef),
+              Color(0xFFee8b60),
             ],
           ),
         ),
-        child: _isLoading
-            ? Center(
-          child: CircularProgressIndicator(
-            color: Colors.white,
-          ),
-        )
-            : FirebaseAnimatedList(
-          query: databaseRef,
-          itemBuilder: (context, snapshot, animation, index) {
-            Map attendance = snapshot.value as Map;
-            attendance['key'] = snapshot.key;
-
-            DateTime date;
-            String lectureName;
-
-            try {
-              date = DateTime.parse(attendance['Date']);
-            } catch (e) {
-              date = DateTime.now();
-            }
-            lectureName = attendance['Lecture Name'] ?? 'Unknown Lecture';
-
-            return Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+              Text(
+                "Attend.ai",
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                   color: Colors.white,
-                  child: ListTile(
-                    leading: Text(
-                      '${index + 1}',
+                ),
+              ),
+              const SizedBox(height: 40),
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white60,
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: Column(
+                    children: [
+                      TabBar(
+                        controller: _tabController,
+                        tabs: [
+                          Tab(text: 'Division A'),
+                          Tab(text: 'Division B'),
+                        ],
+                        indicatorColor: Colors.black,
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            _buildAttendanceList('A'),
+                            _buildAttendanceList('B'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAttendanceList(String division) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: _isLoading
+          ? Center(
+        child: CircularProgressIndicator(
+          color: Colors.black,
+        ),
+      )
+          : FirebaseAnimatedList(
+        query: databaseRef.orderByChild('Division').equalTo(division),
+        itemBuilder: (context, snapshot, animation, index) {
+          Map attendance = snapshot.value as Map;
+          attendance['key'] = snapshot.key;
+
+          DateTime date;
+          String lectureName;
+          String divisionName;
+          String latitude;
+          String longitude;
+
+          try {
+            date = DateTime.parse(attendance['Date']);
+          } catch (e) {
+            date = DateTime.now();
+          }
+          lectureName = attendance['Lecture Name'] ?? 'Unknown Lecture';
+          divisionName = attendance['Division Name'] ?? 'Unknown Division';
+          latitude = attendance['Latitude']?.toString() ?? 'Unknown Latitude';
+          longitude = attendance['Longitude']?.toString() ?? 'Unknown Longitude';
+
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                color: Colors.white,
+                child: ListTile(
+                  leading: Text(
+                    '${index + 1}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                    ),
+                  ),
+                  title: Text(
+                    DateFormat('dd-MM-yyyy').format(date),
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                    ),
+                  ),
+                  subtitle: Text('${lectureName} | Division: $division'),
+                  trailing: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailsPage(
+                            date: DateFormat('dd-MM-yyyy').format(date),
+                            lectureName: lectureName,
+                            latitude: latitude,
+                            longitude: longitude,
+                            division: division,
+                            divisionName: divisionName,// Pass division to DetailsPage
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF39d2c0),
+                    ),
+                    child: Text(
+                      "View",
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    title: Text(
-                      DateFormat('dd-MM-yyyy').format(date),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text(lectureName),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailsPage(
-                              date: DateFormat('dd-MM-yyyy').format(date),
-                              lectureName: lectureName,
-                            ),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      ),
-                      child: Text(
-                        "Details",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                       ),
                     ),
                   ),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
 
+
+
+
 class DetailsPage extends StatefulWidget {
   final String date;
   final String lectureName;
+  final String divisionName;
+  final String latitude;
+  final String longitude;
+  final String division; // Added division parameter
 
   const DetailsPage({
     Key? key,
     required this.date,
     required this.lectureName,
+    required this.divisionName,
+    required this.latitude,
+    required this.longitude,
+    required this.division, // Added division parameter
   }) : super(key: key);
 
   @override
@@ -155,6 +237,12 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  Future<void> _launchUrl(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $urlString';
+    }
+  }
   final databaseRef = FirebaseDatabase.instance.ref('SubmitedDetails');
   List<int> presentRollNumbers = [];
   bool _isLoading = true;
@@ -166,15 +254,23 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   void fetchRollNumbers() async {
-    String uniqueId = "${widget.date}_${widget.lectureName}";
+    String uniqueId = "${widget.date}_${widget.lectureName}_${widget.division}";
     DataSnapshot snapshot = await databaseRef.child(uniqueId).get();
     if (snapshot.exists) {
-      Map data = snapshot.value as Map;
+      var data = snapshot.value;
       setState(() {
-        presentRollNumbers = data.entries
-            .where((entry) => entry.value['Present'] == true)
-            .map((entry) => int.parse(entry.key))
-            .toList();
+        if (data is Map) {
+          presentRollNumbers = (data as Map).entries
+              .where((entry) => entry.value != null && entry.value['Present'] == true)
+              .map((entry) => int.parse(entry.key))
+              .toList();
+        } else if (data is List) {
+          for (var i = 0; i < data.length; i++) {
+            if (data[i] != null && data[i]['Present'] == true) {
+              presentRollNumbers.add(i);
+            }
+          }
+        }
         _isLoading = false;
       });
     } else {
@@ -184,8 +280,23 @@ class _DetailsPageState extends State<DetailsPage> {
     }
   }
 
+  // Future<void> triggerAppsScript() async {
+  //   final String webAppUrl = 'https://script.google.com/macros/s/AKfycbzdxYReyEKEInSnOYzVWIDEQbYtx3OljbTd1kgtCOcW09OcgFj5wpUabfBzLI2_PbqR/exec';
+  //   try {
+  //     final response = await http.get(Uri.parse(webAppUrl));
+  //     if (response.statusCode == 200) {
+  //       print('Data processed successfully: ${response.body}');
+  //     } else {
+  //       print('Failed to process data: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
+
+
   void togglePresence(int rollNo) async {
-    String uniqueId = "${widget.date}_${widget.lectureName}";
+    String uniqueId = "${widget.date}_${widget.lectureName}_${widget.division}";
     DatabaseReference rollRef = databaseRef.child('$uniqueId/$rollNo');
     bool isPresent = presentRollNumbers.contains(rollNo);
 
@@ -205,28 +316,21 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    int totalStudents = 77;
+    int presentCount = presentRollNumbers.length;
+    int absentCount = totalStudents - presentCount;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text(
-          "Details",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
       body: Container(
         height: double.infinity,
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
             colors: [
-              Colors.orange,
-              Colors.purpleAccent,
+              Color(0xFF4b39ef),
+              Color(0xFFee8b60),
             ],
           ),
         ),
@@ -236,84 +340,149 @@ class _DetailsPageState extends State<DetailsPage> {
             color: Colors.white,
           ),
         )
-            : Center(
+            : SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  SizedBox(width: 10),
-                  Text(
-                    'Date: ${widget.date}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  'Lecture: ${widget.lectureName}',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const SizedBox(height: 40),
+              Text(
+                "Attend.ai",
+                style: TextStyle(
+                  fontSize: 36,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 40),
               Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal, // Enable horizontal scrolling
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: List.generate(
-                        (76 / 7).ceil(), // Total rows needed, each containing 7 items
-                            (rowIndex) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(7, (colIndex) {
-                                int rollNo = (rowIndex * 7) + colIndex + 1;
-                                bool isPresent = presentRollNumbers.contains(rollNo);
-                                return GestureDetector(
-                                  onLongPress: () {
-                                    togglePresence(rollNo);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Container(
-                                      height: 45,
-                                      width: 45,
-                                      decoration: BoxDecoration(
-                                        color: isPresent ? Colors.green : Colors.red,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          rollNo.toString(),
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
+                child: Container(
+                  margin: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white60,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const SizedBox(width: 10),
+                          Text(
+                            'Date: ${widget.date}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
-                    ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          'Lecture: ${widget.lectureName}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Present: $presentCount',
+                        style: TextStyle(
+                          color: Colors.white60,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                        ),
+                      ),
+                      Text(
+                        'Absent: $absentCount',
+                        style: TextStyle(
+                          color: Colors.red.shade300,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: List.generate(
+                                (76 / 7).ceil(),
+                                    (rowIndex) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: List.generate(7, (colIndex) {
+                                        int rollNo = (rowIndex * 7) + colIndex + 1;
+                                        bool isPresent = presentRollNumbers.contains(rollNo);
+                                        return GestureDetector(
+                                          onLongPress: () {
+                                            togglePresence(rollNo);
+                                            //Utils().toastMessageBlue("You Can't Edit");
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: Container(
+                                              height: 45,
+                                              width: 45,
+                                              decoration: BoxDecoration(
+                                                color: isPresent
+                                                    ? Colors.white60
+                                                    : Colors.red.shade300,
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  rollNo.toString(),
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => _launchUrl('https://script.google.com/macros/s/AKfycbzEjJzGWOwYwhuRFs0KXB3Pvsuj8d9a9LX_PyDbOgalrMVFc4CJJrIM3nXZq-GiYkDk/exec'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          "Update Sheet",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                          ),
+                        ),
+                      ),
+
+                    ],
                   ),
                 ),
               ),

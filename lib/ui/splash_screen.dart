@@ -1,5 +1,11 @@
+// lib/ui/splash_screen.dart
+
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:krishna/firebase_services/splash_services.dart';
+import 'package:krishna/ui/introscreen.dart';
+import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,12 +15,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final SplashServices splashScreen = SplashServices();
+  final SplashServices _splashServices = SplashServices();
 
   @override
   void initState() {
     super.initState();
-    splashScreen.isLogin(context);
+    _splashServices.checkLoginStatus(context);
   }
 
   @override
@@ -23,26 +29,34 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
             colors: [
-              Colors.orange,
-              Colors.purpleAccent,
+              Color(0xFF4b39ef),
+              Color(0xFFee8b60),
             ],
           ),
         ),
-        child: Center(
-          child: Text(
-            "Attendance Pro",
-            style: TextStyle(
-              fontSize: 35,
-              fontWeight: FontWeight.bold,
-            ),
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Attend.ai",
+                style: TextStyle(
+                  fontSize: 46,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+
   }
 }

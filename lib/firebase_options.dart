@@ -43,6 +43,7 @@ class DefaultFirebaseOptions {
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyBeA4RjmImpk2N9owBBRu8FiEqxBcbpJ3g',
     appId: '1:139197430152:web:f7384e7fdf5cb5c081223d',
+    databaseURL: "https://firstproject-c30de-default-rtdb.firebaseio.com",  // remove this line
     messagingSenderId: '139197430152',
     projectId: 'firstproject-c30de',
     authDomain: 'firstproject-c30de.firebaseapp.com',

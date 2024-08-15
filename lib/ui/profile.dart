@@ -1,10 +1,12 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:krishna/Session_Manager/session_manager.dart';
 import 'package:krishna/ui/auth/login_screen.dart';
+import 'package:krishna/ui/developerInfo.dart';
+import 'package:krishna/ui/otpDeveloperVerification.dart';
+import 'edit_profile_page.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -20,6 +22,8 @@ class _ProfilePageState extends State<ProfilePage> {
   String _branch = '';
   String _rollno = '';
   String _year = '';
+  String _division = '';  // New variable
+  String _email = '';     // New variable
 
   @override
   void initState() {
@@ -34,28 +38,31 @@ class _ProfilePageState extends State<ProfilePage> {
       final snapshot = await databaseRef.child(userId).get();
       if (snapshot.exists) {
         setState(() {
-          final data = snapshot.value as Map;
-          _displayName = data['Name'] ?? 'No Name';
-          _studentID = data['StudentID'] ?? 'No Student ID';
-          _branch = data['Branch'] ?? 'No Branch';
-          _rollno = data['Roll No'] ?? 'No Roll No';
-          _year = data['Year'] ?? 'No Year';
+          final data = snapshot.value as Map?;
+          _displayName = data?['Name'] ?? 'No Name';
+          _studentID = data?['StudentID']?.replaceAll('@gmail.com', '') ?? 'No Student ID';
+          _branch = data?['Branch'] ?? 'No Branch';
+          _rollno = data?['Roll No'] ?? 'No Roll No';
+          _year = data?['Year'] ?? 'No Year';
+          _division = data?['Division'] ?? 'No Division'; // Fetch Division
+          _email = data?['EmailID'] ?? 'No EmailID';      // Fetch EmailID
         });
       } else {
-        // Handle case where data doesn't exist
         setState(() {
           _displayName = 'No Name';
           _studentID = 'No Student ID';
           _branch = 'No Branch';
           _rollno = 'No Roll No';
           _year = 'No Year';
+          _division = 'No Division'; // Default Division
+          _email = 'No EmailID';      // Default EmailID
         });
       }
     }
   }
 
   void _logout(BuildContext context) {
-    _auth.signOut().then((value) {
+    _auth.signOut().then((_) {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -72,51 +79,48 @@ class _ProfilePageState extends State<ProfilePage> {
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
             colors: [
-              Colors.orange,
-              Colors.purpleAccent,
+              Color(0xFF4b39ef),
+              Color(0xFFee8b60),
             ],
           ),
         ),
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 50),
-                const Text(
-                  "Profile",
+                Text(
+                  "Attend.ai",
                   style: TextStyle(
-                    fontSize: 45,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 36,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                    color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 50),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white60,
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: Form(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
                     child: Column(
                       children: [
-                        const SizedBox(height: 5),
-                        CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          radius: 60,
-                          child: Image.network(
-                            "https://i.pinimg.com/736x/42/12/19/42121987e913a73ee9e656ce4060a77f.jpg",
-                          ),
-                        ),
                         const SizedBox(height: 30),
-                        const Text(
-                          "User Details",
+                        Text(
+                          "Details",
                           style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 36,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                            color: Color(0xFF101213),
                           ),
                         ),
                         const SizedBox(height: 30),
@@ -125,18 +129,88 @@ class _ProfilePageState extends State<ProfilePage> {
                         _buildDetailRow("Roll No: ", _rollno),
                         _buildDetailRow("Branch: ", _branch),
                         _buildDetailRow("Year: ", _year),
+                        _buildDetailRow("Division: ", _division), // Display Division
+                        _buildDetailRow("Email ID: ", _email),     // Display EmailID
                         const SizedBox(height: 20),
-                        const Text(
+                        Text(
                           "Note:",
                           style: TextStyle(
                             color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                             fontSize: 20,
                           ),
                         ),
                         const SizedBox(height: 5),
-                        const Text("Facing any issue with login, contact Developer."),
+                        Text("Facing any issue with login, contact Developer.",style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                        ),),
                         const SizedBox(height: 20),
+                        SizedBox(
+                          width: 400,
+                          child: ElevatedButton(
+
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF4b39ef),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditProfilePage(
+                                    displayName: _displayName,
+                                    studentID: _studentID,
+                                    branch: _branch,
+                                    rollno: _rollno,
+                                    year: _year,
+                                    division: _division,   // Pass Division to EditProfilePage
+                                    email: _email,         // Pass EmailID to EditProfilePage
+                                    userId: _user!.uid,
+                                  ),
+                                ),
+
+                              );
+                            },
+                            child: Text(
+                              'Edit Profile',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: 400,
+                          child: ElevatedButton(
+
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade400,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              _logout(context);
+                            },
+                            child: Text(
+                              'Sign Out',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -147,9 +221,11 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _logout(context),
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => DeveloperInfo(),));
+        },
         backgroundColor: Colors.black,
-        child: const Icon(Icons.logout, color: Colors.white),
+        child: const Icon(Icons.adb, color: Colors.white,size: 32,),
       ),
     );
   }
@@ -161,17 +237,22 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
+              fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
             ),
           ),
           const SizedBox(width: 10),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

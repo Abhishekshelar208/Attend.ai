@@ -3,10 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:krishna/ui/auth/login_screen.dart';
 import 'package:krishna/ui/extra.dart';
+import 'package:krishna/ui/rules.dart';
 import 'package:krishna/ui/search.dart';
 import 'package:krishna/ui/profile.dart';
 import 'package:krishna/ui/student_home.dart';
 
+import 'defaulterList.dart';
 import 'like_student.dart';
 import 'teacher_home.dart';
 import 'like.dart';
@@ -33,7 +35,7 @@ class _HomeScreenForStdudentState extends State<HomeScreenForStdudent> {
   static final List<Widget> _pages = <Widget>[
     StudentHomePage(),
     StudentLikePage(),
-    SettingPage(),
+    RulesPage(),
     ProfilePage(),
   ];
 
@@ -48,75 +50,6 @@ class _HomeScreenForStdudentState extends State<HomeScreenForStdudent> {
     User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: Column(
-          children: [
-            DrawerHeader(
-              padding: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Container(
-                padding: const EdgeInsets.only(left: 10),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.red,
-                      backgroundImage: NetworkImage(
-                          "https://i.pinimg.com/736x/42/12/19/42121987e913a73ee9e656ce4060a77f.jpg"),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Attendance Pro",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        Text(
-                          user?.email ?? "", // Display user's email here
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.settings),
-                    title: const Text('Settings'),
-                    onTap: () {
-                      // Navigate to settings page
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.info),
-                    title: const Text('About'),
-                    onTap: () {
-                      // Navigate to about page
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.logout),
-                    title: const Text('Logout'),
-                    onTap: () => _logout(context),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
       bottomNavigationBar: Container(
         color: Colors.black,
         child: Padding(
@@ -132,7 +65,7 @@ class _HomeScreenForStdudentState extends State<HomeScreenForStdudent> {
             tabs: const [
               GButton(icon: Icons.home, text: "Home"),
               GButton(icon: Icons.add_chart_rounded, text: "Attendance"),
-              GButton(icon: Icons.hourglass_empty, text: "Empty"),
+              GButton(icon: Icons.hourglass_empty, text: "Rules"),
               GButton(icon: Icons.person, text: "Profile"),
             ],
           ),
@@ -143,11 +76,11 @@ class _HomeScreenForStdudentState extends State<HomeScreenForStdudent> {
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
             colors: [
-              Colors.orange,
-              Colors.purpleAccent,
+              Color(0xFF4b39ef),
+              Color(0xFFee8b60),
             ],
           ),
         ),

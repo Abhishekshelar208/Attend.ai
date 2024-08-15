@@ -1,7 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:krishna/Session_Manager/session_manager.dart';
+import 'package:krishna/ui/TeacherSignupVerification.dart';
+import 'package:krishna/ui/create_teacher_id.dart';
 import 'package:krishna/utils/utils.dart';
 
 class CreateStudentID extends StatefulWidget {
@@ -15,13 +18,15 @@ class _CreateStudentIDState extends State<CreateStudentID> {
   final databaseRef = FirebaseDatabase.instance.ref('Student_ID_&_Password');
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  TextEditingController studentIDController = TextEditingController();
+  TextEditingController emailIDController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController rollNoController = TextEditingController();
+  TextEditingController studentIDController = TextEditingController();
 
   String? selectedBranch;
   String? selectedYear;
+  String? selectedDivision;
 
   final List<String> branches = [
     "Computer Engineering",
@@ -31,9 +36,9 @@ class _CreateStudentIDState extends State<CreateStudentID> {
     "Artificial Intelligence and Data Science"
   ];
   final List<String> years = ["First Year", "Second Year", "Third Year", "Final Year"];
+  final List<String> divisions = ["A", "B"];
 
-  // List to store all student details
-  List<Map<String, dynamic>> studentInfo = [];
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +48,11 @@ class _CreateStudentIDState extends State<CreateStudentID> {
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
             colors: [
-              Colors.orange,
-              Colors.purpleAccent,
+              Color(0xFF4b39ef),
+              Color(0xFFee8b60),
             ],
           ),
         ),
@@ -57,19 +62,22 @@ class _CreateStudentIDState extends State<CreateStudentID> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 50),
                 Text(
-                  "Sign Up",
+                  "Attend.ai",
                   style: TextStyle(
-                    fontSize: 45,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 36,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                    color: Colors.white,
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 40,
                 ),
                 Container(
-                  height: 700,
-                  width: 380,
+                  height: 620,
+                  width: 400,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
@@ -77,19 +85,32 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(height: 20),
-                        CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          radius: 60,
-                          child: Image.network(
-                              "https://i.pinimg.com/736x/42/12/19/42121987e913a73ee9e656ce4060a77f.jpg"),
-                        ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 30),
                         Text(
-                          "Student Registration",
+                          "Get Started",
                           style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 36,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                            color: Color(0xFF101213),
+                          ),
+                        ),
+                        Text(
+                          "Let's get started by filling out the form",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                            color: Color(0xFF57636c),
+                          ),
+                        ),
+                        Text(
+                          "below",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                            color: Color(0xFF57636c),
                           ),
                         ),
                         SizedBox(height: 20),
@@ -98,12 +119,16 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                           child: TextField(
                             controller: nameController,
                             decoration: InputDecoration(
-                              hintText: "Enter Full Name...",
+                              hintText: "Name",
+                              hintStyle: TextStyle(color: Color(0xFF57636c),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF1F4F8),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
+                                borderSide: BorderSide.none,
                               ),
                             ),
                           ),
@@ -124,12 +149,16 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                               });
                             },
                             decoration: InputDecoration(
-                              hintText: "Select Year...",
+                              hintText: "Year",
+                              hintStyle: TextStyle(color: Color(0xFF57636c),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF1F4F8),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
+                                borderSide: BorderSide.none,
                               ),
                             ),
                           ),
@@ -150,12 +179,46 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                               });
                             },
                             decoration: InputDecoration(
-                              hintText: "Select Branch...",
+                              hintText: "Branch",
+                              hintStyle: TextStyle(color: Color(0xFF57636c),
+
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,),
+                              filled: true,
+                              fillColor: Color(0xFFF1F4F8),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: DropdownButtonFormField<String>(
+                            value: selectedDivision,
+                            items: divisions.map((String division) {
+                              return DropdownMenuItem<String>(
+                                value: division,
+                                child: Text(division),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedDivision = newValue;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Division",
+                              hintStyle: TextStyle(color: Color(0xFF57636c),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF1F4F8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
                               ),
                             ),
                           ),
@@ -163,15 +226,19 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: TextField(
-                            keyboardType: TextInputType.number,
                             controller: rollNoController,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              hintText: "Enter Roll No...",
+                              hintText: "RollNo",
+                              hintStyle: TextStyle(color: Color(0xFF57636c),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF1F4F8),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
+                                borderSide: BorderSide.none,
                               ),
                             ),
                           ),
@@ -181,12 +248,36 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                           child: TextField(
                             controller: studentIDController,
                             decoration: InputDecoration(
-                              hintText: "Create Student ID...",
+                              hintText: "StudentID",
+                              hintStyle: TextStyle(color: Color(0xFF57636c),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF1F4F8),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: TextField(
+                            controller: emailIDController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              hintText: "Email ID",
+                              hintStyle: TextStyle(color: Color(0xFF57636c),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF1F4F8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
                               ),
                             ),
                           ),
@@ -196,73 +287,108 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                           child: TextField(
                             controller: passwordController,
                             decoration: InputDecoration(
-                              hintText: "Set Password...",
+                              hintText: "Password",
+                              hintStyle: TextStyle(color: Color(0xFF57636c),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF1F4F8),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
+                                borderSide: BorderSide.none,
                               ),
                             ),
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            // Validate inputs
-                            if (nameController.text.isEmpty ||
-                                selectedYear == null ||
-                                selectedBranch == null ||
-                                rollNoController.text.isEmpty ||
-                                studentIDController.text.isEmpty ||
-                                passwordController.text.isEmpty) {
-                              Utils().toastMessage("Please fill all fields.");
-                              return;
-                            }
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: 300,
+                          height: 44,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              // Validate inputs
+                              if (nameController.text.isEmpty ||
+                                  selectedYear == null ||
+                                  selectedBranch == null ||
+                                  selectedDivision == null ||
+                                  rollNoController.text.isEmpty ||
+                                  studentIDController.text.isEmpty ||
+                                  emailIDController.text.isEmpty ||
+                                  passwordController.text.isEmpty) {
+                                Utils().toastMessage("Please fill all fields.");
+                                return;
+                              }
 
-                            try {
-                              // Signup logic using Firebase Authentication
-                              UserCredential userCredential = await _auth
-                                  .createUserWithEmailAndPassword(
-                                email: studentIDController.text.toString().toUpperCase() + "@gmail.com",
-                                password: passwordController.text,
-                              );
-
-                              // Set user ID in session controller
-                              SessionController().userId = userCredential.user!.uid.toString();
-
-                              // Store user information in Firebase Realtime Database
-                              await databaseRef.child(SessionController().userId!).set({
-                                'id': SessionController().userId,
-                                'Name': nameController.text.toString(),
-                                'StudentID': studentIDController.text.toString().toUpperCase() + "@gmail.com",
-                                'Password': passwordController.text.toString(),
-                                'Roll No': rollNoController.text.toString(),
-                                'Branch': selectedBranch,
-                                'Year': selectedYear,
+                              setState(() {
+                                isLoading = true;
                               });
 
-                              // On successful signup
-                              Utils().toastMessage("Signup Successful");
+                              try {
+                                // Signup logic using Firebase Authentication
+                                UserCredential userCredential = await _auth
+                                    .createUserWithEmailAndPassword(
+                                  email: emailIDController.text,
+                                  password: passwordController.text,
+                                );
 
-                              // Navigate back to previous screen
-                              Navigator.pop(context);
-                            } catch (error) {
-                              // Handle errors during signup
-                              Utils().toastMessage("Signup Error: $error");
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                                // Set user ID in session controller
+                                SessionController().userId = userCredential.user!.uid.toString();
+
+                                // Store user information in Firebase Realtime Database
+                                await databaseRef.child(SessionController().userId!).set({
+                                  'id': SessionController().userId,
+                                  'Name': nameController.text.toString(),
+                                  'EmailID': emailIDController.text.toString(),
+                                  'Roll No': rollNoController.text.toString(),
+                                  'Branch': selectedBranch,
+                                  'Year': selectedYear,
+                                  'Division': selectedDivision,
+                                  'StudentID': studentIDController.text.toString().toUpperCase(),
+                                });
+
+                                // On successful signup
+                                Utils().toastMessageBlue("Signup Successful");
+
+                                setState(() {
+                                  isLoading = false;
+                                });
+
+                                // Navigate back to previous screen
+                                Navigator.pop(context);
+                              } catch (error) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                // Handle errors during signup
+                                Utils().toastMessage("Signup Error: $error");
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF4b39ef),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            "Register",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
+                            child: isLoading
+                                ? SizedBox(
+                              height: 28, // height of the CircularProgressIndicator
+                              width: 28, // width of the CircularProgressIndicator
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                                : Text(
+                              "Create Account",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              ),
                             ),
                           ),
                         ),
@@ -271,16 +397,27 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                           "Note:",
                           style: TextStyle(
                             color: Colors.black,
-                            fontWeight: FontWeight.bold,
                             fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                           ),
                         ),
                         SizedBox(height: 5),
-                        Text(
-                          "Required Internet Connection.",
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TeacherSignupOTPVerification()));
+                          },
+                          child: Text(
+                            "Teacher's Sign Up Page",
+                            style: TextStyle(
+                              color: Colors.blue.shade700,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                            ),
                           ),
                         ),
                         SizedBox(height: 35),

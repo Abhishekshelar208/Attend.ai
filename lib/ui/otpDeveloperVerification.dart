@@ -1,0 +1,201 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:krishna/ui/developerHome.dart';
+import 'package:krishna/ui/home_screen.dart';
+import '../utils/utils.dart';
+import 'homeScreenForDeveloper.dart'; // Make sure to replace with your actual Utils import
+
+class OTPDeveloperVerification extends StatefulWidget {
+  const OTPDeveloperVerification({super.key});
+
+  @override
+  State<OTPDeveloperVerification> createState() => _OTPDeveloperVerificationState();
+}
+
+class _OTPDeveloperVerificationState extends State<OTPDeveloperVerification> {
+  List<TextEditingController> controllers = List.generate(
+    4,
+        (index) => TextEditingController(),
+  );
+  List<FocusNode> focusNodes = List.generate(
+    4,
+        (index) => FocusNode(),
+  );
+  bool _codeSubmitted = false;
+
+  void _submitCode() {
+    if (_codeSubmitted) return; // Prevent multiple submissions
+    String enteredCode = controllers.map((controller) => controller.text).join();
+
+    if (enteredCode == "0503") {
+      // Navigate to HomeScreen if code is correct
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreenForDeveloper()), // Replace with your actual HomeScreen
+      );
+    } else {
+      // Show error message
+      Utils().toastMessage('Invalid Code');
+    }
+  }
+
+  @override
+  void dispose() {
+    // Dispose focus nodes and controllers
+    for (var focusNode in focusNodes) {
+      focusNode.dispose();
+    }
+    for (var controller in controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onFieldChanged(String value, int index) {
+    if (value.length == 1) {
+      if (index < 3) {
+        FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+      }
+    } else if (value.isEmpty && index > 0) {
+      FocusScope.of(context).requestFocus(focusNodes[index - 1]);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Color(0xFF4b39ef),
+              Color(0xFFee8b60),
+            ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 60),
+              Text(
+                "Attend.ai",
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                  color: Colors.white,
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Container(
+                    width: 450, // Width similar to LoginScreen
+                    height: 350, // Height similar to LoginScreen
+                    decoration: BoxDecoration(
+                      color: Colors.white60,
+                      borderRadius: BorderRadius.circular(50), // Border radius
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Enter Password",
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: List.generate(
+                              4,
+                                  (index) => SizedBox(
+                                width: 50,
+                                height: 70,
+                                child: TextField(
+                                  controller: controllers[index],
+                                  focusNode: focusNodes[index],
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 1,
+                                  enabled: !_codeSubmitted,
+                                  decoration: InputDecoration(
+                                    counter: Offstage(),
+                                    filled: true,
+                                    fillColor: Colors.grey[200],
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                  onChanged: (value) => _onFieldChanged(value, index),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                          SizedBox(
+                            height: 44,
+                            width: 300,
+                            child: ElevatedButton(
+                              onPressed: _codeSubmitted ? null : _submitCode,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: _codeSubmitted
+                                  ? SizedBox(
+                                height: 28,
+                                width: 28,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                                  : Text(
+                                "Submit",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                                ),
+                              ),
+                            ),
+
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "Only Developer Can Access",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              color: Colors.red.shade400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
