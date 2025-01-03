@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:krishna/ui/feedback.dart';
-import 'package:url_launcher/url_launcher.dart'; // Add this import
+import 'package:url_launcher/url_launcher.dart';
+
+import 'developerInfo.dart'; // Add this import
 
 class RulesPage extends StatelessWidget {
   @override
@@ -69,7 +71,7 @@ class RulesPage extends StatelessWidget {
                           SizedBox(height: 30),
                           ElevatedButton(
                             onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackPage(),));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => DeveloperInfo(),));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF4b39ef),
@@ -78,7 +80,7 @@ class RulesPage extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              "Feedback",
+                              "Connect  to  Developer",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,

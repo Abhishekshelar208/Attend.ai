@@ -121,6 +121,7 @@ class _OtpforteacherverificationState extends State<Otpforteacherverification> {
                                 width: 50,
                                 height: 70,
                                 child: TextField(
+                                  obscureText: true,
                                   controller: controllers[index],
                                   focusNode: focusNodes[index],
                                   textAlign: TextAlign.center,

@@ -8,10 +8,12 @@ class IntroScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
+        height: screenHeight,
+        width: screenWidth,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topRight,
@@ -26,11 +28,11 @@ class IntroScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
           child: Column(
             children: [
-              const SizedBox(height: 50),
+              SizedBox(height: screenHeight * 0.050),
               Text(
                 "Attend.ai",
                 style: TextStyle(
-                  fontSize: 36,
+                  fontSize: screenWidth * 0.1,
                   fontWeight: FontWeight.w600,
                   fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                   color: Colors.white,
@@ -39,8 +41,8 @@ class IntroScreen extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: Container(
-                    width: 450, // Width as per the LoginScreen
-                    height: 350, // Height as per the LoginScreen
+                    height: screenHeight * 0.35,
+                    width:  screenWidth * 0.95,
                     decoration: BoxDecoration(
                       color: Colors.white60,
                       borderRadius: BorderRadius.circular(50), // Border radius
@@ -53,17 +55,16 @@ class IntroScreen extends StatelessWidget {
                           Text(
                             "Welcome Back",
                             style: TextStyle(
-                              fontSize: 36,
+                              fontSize: screenWidth * 0.085,
                               fontWeight: FontWeight.w600,
                               fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                               color: Color(0xFF101213),
                             ),
                           ),
-                          SizedBox(height: 10),
-                          SizedBox(height: 30),
+                          SizedBox(height: screenHeight * 0.050),
                           SizedBox(
-                            height: 44, // Set button height
-                            width: 300,
+                            height: screenHeight * 0.045, // Set button height
+                            width: screenWidth * 0.7,
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
@@ -83,17 +84,17 @@ class IntroScreen extends StatelessWidget {
                                 'Enter As Teacher',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20,
+                                  fontSize: screenWidth * 0.050,
                                   fontWeight: FontWeight.w600,
                                   fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: screenHeight * 0.020),
                           SizedBox(
-                            height: 44, // Set button height
-                            width: 300,
+                            height: screenHeight * 0.045, // Set button height
+                            width: screenWidth * 0.7,
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
@@ -113,7 +114,7 @@ class IntroScreen extends StatelessWidget {
                                 'Enter As Student',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20,
+                                  fontSize: screenWidth * 0.050,
                                   fontWeight: FontWeight.w600,
                                   fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                                 ),

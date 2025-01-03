@@ -129,11 +129,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             SizedBox(height: 10),
                             buildTextFormField('Name', _displayName, (value) => _displayName = value ?? '', true),
-                            buildTextFormField('Student ID', _studentID, (value) => _studentID = value ?? '', true),
-                            buildTextFormField('Branch', _branch, (value) => _branch = value ?? '', true),
+                            buildTextFormField('Student ID', _studentID, (value) => _studentID = value ?? '', false),
+                            buildTextFormField('Branch', _branch, (value) => _branch = value ?? '', false),
                             buildTextFormField('Division', _division, (value) => _division = value ?? '', false),
                             buildTextFormField('Roll No', _rollno, (value) => _rollno = value ?? '', false), // Roll No field is disabled
-                            buildTextFormField('Year', _year, (value) => _year = value ?? '', true),
+                            buildTextFormField('Year', _year, (value) => _year = value ?? '', false),
                             buildTextFormField('Email ID', _email, (value) => _email = value ?? '', false), // Email field is disabled
                             SizedBox(height: 20),
                             SizedBox(

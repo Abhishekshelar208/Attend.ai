@@ -62,10 +62,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
+        height: screenHeight,
+        width: screenWidth,
         decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topRight,
@@ -76,38 +78,42 @@ class _LoginScreenState extends State<LoginScreen> {
               ]),
         ),
         child: SingleChildScrollView(
+
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
+            padding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.08,
+              horizontal: screenWidth * 0.05,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                SizedBox(height: screenHeight * 0.030),
                 Text(
                   "Attend.ai",
                   style: TextStyle(
-                    fontSize: 36,
+                    fontSize: screenWidth * 0.1,
                     fontWeight: FontWeight.w600,
                     fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 40),
+                SizedBox(height: screenHeight * 0.060),
                 Container(
-                  height: 600,
-                  width: 400,
+                  height: screenHeight * 0.65,
+                  width: screenWidth * 0.9,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       children: [
-                        const SizedBox(height: 30),
+                        SizedBox(height: screenHeight * 0.030,),
                         Text(
                           "Welcome Back",
                           style: TextStyle(
-                            fontSize: 36,
+                            fontSize: screenWidth * 0.080,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF101213),
                             fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
@@ -116,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           "Fill out the information below in order",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: screenWidth * 0.034,
                             fontWeight: FontWeight.w500,
                             color: Color(0xFF57636c),
                             fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
@@ -125,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           "to access your account.",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: screenWidth * 0.034,
                             fontWeight: FontWeight.w500,
                             color: Color(0xFF57636c),
                             fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
@@ -134,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: SizedBox(
-                            width: 300,
+                            width: screenWidth * 0.7,
                             child: TextFormField(
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
@@ -158,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: SizedBox(
-                            width: 300,
+                            width: screenWidth * 0.7,
                             child: TextFormField(
                               controller: passwordController,
                               obscureText: true,
@@ -180,8 +186,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         SizedBox(
-                          width: 300,
-                          height: 44,
+                          width: screenWidth * 0.7,
+                          height: screenHeight * 0.045,
                           child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
@@ -207,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               "Sign In",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: screenWidth * 0.050,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                               ),
@@ -225,95 +231,75 @@ class _LoginScreenState extends State<LoginScreen> {
                             "Forget Password?",
                             style: TextStyle(
                               color: Colors.blue.shade700,
-                              fontSize: 14,
+                              fontSize: screenWidth * 0.035,
                               fontWeight: FontWeight.w600,
                               fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: screenHeight * 0.025),
                         Text(
                           "Or sign in with",
                           style: TextStyle(
                             color: Color(0xFF57636c),
-                            fontSize: 14,
+                            fontSize: screenWidth * 0.040,
                             fontWeight: FontWeight.w600,
                             fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                Utils().toastMessageBlue('Coming Soon...');
-                              },
-                              icon: const Icon(
-                                Icons.g_mobiledata,
-                                color: Colors.black,
-                                size: 30,
-                              ),
-                              label: Text(
-                                "Continue with Google",
-                                style: TextStyle(color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                        SizedBox(height: screenHeight * 0.015),
+                        SingleChildScrollView(
+                          //scrollDirection: Axis.vertical,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // ElevatedButton.icon(
+                              //   onPressed: () {
+                              //     Utils().toastMessageBlue('Coming Soon...');
+                              //   },
+                              //   icon: const Icon(
+                              //     Icons.g_mobiledata,
+                              //     color: Colors.black,
+                              //     size: 30,
+                              //   ),
+                              //   label: Text(
+                              //     "Continue with Google",
+                              //     style: TextStyle(color: Colors.black,
+                              //       fontWeight: FontWeight.w600,
+                              //       fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                              //       fontSize: screenWidth * 0.030,
+                              //     ),
+                              //   ),
+                              //   style: ElevatedButton.styleFrom(
+                              //     foregroundColor: Colors.black,
+                              //     backgroundColor: Colors.white,
+                              //     shape: RoundedRectangleBorder(
+                              //       borderRadius: BorderRadius.circular(12),
+                              //     ),
+                              //   ),
+                              // ),
+                              // SizedBox(height: screenHeight * 0.050),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CreateStudentID()));
+                                },
+                                child: Text(
+                                  "Don't have an account? Sign Up here",
+                                  style: TextStyle(
+                                    color: Colors.blue.shade700,
+                                    fontSize: screenWidth * 0.040,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                                  ),
                                 ),
                               ),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.black,
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                Utils().toastMessageBlue('Coming Soon...');
-                              },
-                              icon: const Icon(
-                                Icons.apple,
-                                color: Colors.black,
-                                size: 27,
-                              ),
-                              label: Text(
-                                "Continue with Apple",
-                                style: TextStyle(color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.black,
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CreateStudentID()));
-                          },
-                          child: Text(
-                            "Don't have an account? Sign Up here",
-                            style: TextStyle(
-                              color: Colors.blue.shade700,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
-                            ),
+                            ],
                           ),
                         ),
+
                       ],
                     ),
                   ),

@@ -353,7 +353,7 @@ class _ActivateDialogState extends State<ActivateDialog> {
       if (codeArray != null && codeArray is List) {
         if (codeArray.contains(enteredCode)) {
           await _storeRollNumber();
-          _showResult("Processing");
+          _showResult("To view Attendance -> 2nd Tab");
         } else {
           Utils().toastMessage('Invalid Code');
         }
@@ -373,15 +373,17 @@ class _ActivateDialogState extends State<ActivateDialog> {
       DataSnapshot userSnapshot = userEvent.snapshot;
 
       if (userSnapshot.exists) {
-        String? rollNumber = userSnapshot.child('Roll No').value as String?;
-        if (rollNumber != null) {
+        String? studentId = userSnapshot.child('StudentID').value as String?;
+        String? RollNo = userSnapshot.child('Roll No').value as String?;
+        if (studentId != null) {
           String key = '${widget.date}_${widget.lectureName}_${widget.divisionName}';
-          DatabaseReference submittedDetailsRef = FirebaseDatabase.instance.ref('SubmitedDetails/$key/$rollNumber');
+          DatabaseReference submittedDetailsRef = FirebaseDatabase.instance.ref('SubmitedDetails/$key/$studentId');
           await submittedDetailsRef.set({
-            'RollNo': rollNumber,
+            'StudentID': studentId,
+            'Roll No': RollNo,
             'Present': true,
           });
-          Utils().toastMessage("Processing, Don't Close The App");
+          Utils().toastMessageBlue("Attendance Marked Successfully.");
           Navigator.of(context).pop(); // Close dialog
         }
       } else {
@@ -397,9 +399,24 @@ class _ActivateDialogState extends State<ActivateDialog> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final screenHeight = MediaQuery.of(context).size.height;
+        final screenWidth = MediaQuery.of(context).size.width;
         return AlertDialog(
-          title: Text('Result'),
-          content: Text(message),
+          title: Text(
+            'Attendance Marked',
+            style: TextStyle(
+              fontSize: screenWidth * 0.060,
+              fontWeight: FontWeight.w600,
+              fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+              color: Colors.green.shade500,
+            ),
+          ),
+          content: Text(message,style: TextStyle(
+            fontSize: screenWidth * 0.035,
+            fontWeight: FontWeight.bold,
+            fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+            color: Colors.black,
+          ),),
           actions: <Widget>[
             TextButton(
               child: Text('OK'),
@@ -410,8 +427,10 @@ class _ActivateDialogState extends State<ActivateDialog> {
           ],
         );
       },
+
     );
   }
+
 
   void _onTextChanged(int index, String value) {
     if (value.length == 1 && index < 3) {

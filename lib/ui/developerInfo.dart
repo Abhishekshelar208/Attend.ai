@@ -69,12 +69,14 @@ class _DeveloperInfoState extends State<DeveloperInfo> {
                           ),
                           const SizedBox(height: 10),
                           Container(
-                            height: 200,
-                            width: 200,
+                            height: 185,
+                            width: 185,
                             child: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                'https://t4.ftcdn.net/jpg/02/76/69/13/360_F_276691386_nl0MPBlwN5sgVhMHmkdqf5nWCHUSEaWs.jpg',
-                              ),
+
+                              backgroundImage: AssetImage('lib/assets/images/mynewpic.png'),
+                              // backgroundImage: NetworkImage(
+                              //   'https://t4.ftcdn.net/jpg/02/76/69/13/360_F_276691386_nl0MPBlwN5sgVhMHmkdqf5nWCHUSEaWs.jpg',
+                              // ),
                             ),
                           ),
                           const SizedBox(height: 20),

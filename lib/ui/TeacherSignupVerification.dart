@@ -62,10 +62,12 @@ class _TeacherSignupOTPVerificationState extends State<TeacherSignupOTPVerificat
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
+        height: screenHeight,
+        width: screenWidth,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topRight,
@@ -80,11 +82,11 @@ class _TeacherSignupOTPVerificationState extends State<TeacherSignupOTPVerificat
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              const SizedBox(height: 60),
+              SizedBox(height: screenHeight * 0.085),
               Text(
                 "Attend.ai",
                 style: TextStyle(
-                  fontSize: 36,
+                  fontSize: screenWidth * 0.1,
                   fontWeight: FontWeight.w600,
                   fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                   color: Colors.white,
@@ -93,8 +95,8 @@ class _TeacherSignupOTPVerificationState extends State<TeacherSignupOTPVerificat
               Expanded(
                 child: Center(
                   child: Container(
-                    width: 450, // Width similar to LoginScreen
-                    height: 350, // Height similar to LoginScreen
+                    height: screenHeight * 0.35,
+                    width:  screenWidth * 0.90,
                     decoration: BoxDecoration(
                       color: Colors.white60,
                       borderRadius: BorderRadius.circular(50), // Border radius
@@ -107,21 +109,22 @@ class _TeacherSignupOTPVerificationState extends State<TeacherSignupOTPVerificat
                           Text(
                             "Enter Password",
                             style: TextStyle(
-                              fontSize: 28,
+                              fontSize: screenWidth * 0.070,
                               fontWeight: FontWeight.w600,
                               fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                               color: Colors.black54,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: screenHeight * 0.030),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: List.generate(
                               4,
                                   (index) => SizedBox(
-                                width: 50,
-                                height: 70,
+                                width: screenWidth * 0.13,
+                                height: screenHeight * 0.080,
                                 child: TextField(
+                                  obscureText: true,
                                   controller: controllers[index],
                                   focusNode: focusNodes[index],
                                   textAlign: TextAlign.center,
@@ -142,10 +145,10 @@ class _TeacherSignupOTPVerificationState extends State<TeacherSignupOTPVerificat
                               ),
                             ),
                           ),
-                          SizedBox(height: 30),
+                          SizedBox(height: screenHeight * 0.030),
                           SizedBox(
-                            height: 44,
-                            width: 300,
+                            height: screenHeight * 0.050,
+                            width: screenWidth * 0.7,
                             child: ElevatedButton(
                               onPressed: _codeSubmitted ? null : _submitCode,
                               style: ElevatedButton.styleFrom(
@@ -167,7 +170,7 @@ class _TeacherSignupOTPVerificationState extends State<TeacherSignupOTPVerificat
                                 "Submit",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20,
+                                  fontSize: screenWidth * 0.050,
                                   fontWeight: FontWeight.w600,
                                   fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                                 ),
@@ -175,14 +178,12 @@ class _TeacherSignupOTPVerificationState extends State<TeacherSignupOTPVerificat
                             ),
 
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          SizedBox(height: screenHeight * 0.012),
                           Text(
                             "Only Teacher's Can Access",
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth * 0.040,
+                              fontWeight: FontWeight.w900,
                               fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                               color: Colors.red.shade400,
                             ),

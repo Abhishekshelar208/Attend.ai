@@ -25,10 +25,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
+        height: screenHeight,
+        width: screenWidth,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topRight,
@@ -46,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Text(
                 "Attend.ai",
                 style: TextStyle(
-                  fontSize: 46,
+                  fontSize: screenWidth * 0.12,
                   fontWeight: FontWeight.w600,
                   fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                   color: Colors.white,

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:krishna/Session_Manager/session_manager.dart';
 import 'package:krishna/ui/TeacherSignupVerification.dart';
 import 'package:krishna/ui/create_teacher_id.dart';
+import 'package:krishna/ui/introscreen.dart';
 import 'package:krishna/utils/utils.dart';
 
 class CreateStudentID extends StatefulWidget {
@@ -42,10 +43,12 @@ class _CreateStudentIDState extends State<CreateStudentID> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
+        height: screenHeight,
+        width: screenWidth,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topRight,
@@ -58,26 +61,27 @@ class _CreateStudentIDState extends State<CreateStudentID> {
         ),
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
+            padding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.05,
+              horizontal: screenWidth * 0.04,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                SizedBox(height: screenHeight * 0.055),
                 Text(
                   "Attend.ai",
                   style: TextStyle(
-                    fontSize: 36,
+                    fontSize: screenWidth * 0.1,
                     fontWeight: FontWeight.w600,
                     fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(
-                  height: 40,
-                ),
+                SizedBox(height: screenHeight * 0.055),
                 Container(
-                  height: 620,
-                  width: 400,
+                  height: screenHeight * 0.67,
+                  width:  screenWidth * 0.92,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
@@ -85,11 +89,11 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(height: 30),
+                        SizedBox(height: screenHeight * 0.035),
                         Text(
                           "Get Started",
                           style: TextStyle(
-                            fontSize: 36,
+                            fontSize: screenWidth * 0.080,
                             fontWeight: FontWeight.w600,
                             fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                             color: Color(0xFF101213),
@@ -98,7 +102,7 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                         Text(
                           "Let's get started by filling out the form",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: screenWidth * 0.034,
                             fontWeight: FontWeight.w500,
                             fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                             color: Color(0xFF57636c),
@@ -107,20 +111,21 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                         Text(
                           "below",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: screenWidth * 0.034,
                             fontWeight: FontWeight.w500,
                             fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                             color: Color(0xFF57636c),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: screenHeight * 0.020),
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: TextField(
                             controller: nameController,
                             decoration: InputDecoration(
                               hintText: "Name",
-                              hintStyle: TextStyle(color: Color(0xFF57636c),
+                              hintStyle: TextStyle(
+                                color: Color(0xFF57636c),
                                 fontWeight: FontWeight.w600,
                                 fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                               ),
@@ -301,12 +306,10 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        SizedBox(height: screenHeight * 0.020),
                         SizedBox(
-                          width: 300,
-                          height: 44,
+                          width: screenHeight * 0.3,
+                          height: screenHeight * 0.045,
                           child: ElevatedButton(
                             onPressed: () async {
                               // Validate inputs
@@ -357,7 +360,8 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                                 });
 
                                 // Navigate back to previous screen
-                                Navigator.pop(context);
+                                //Navigator.pop(context);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => IntroScreen(),));
                               } catch (error) {
                                 setState(() {
                                   isLoading = false;
@@ -385,24 +389,24 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                               "Create Account",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: screenWidth * 0.050,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(height: 30),
+                        SizedBox(height: screenHeight * 0.025),
                         Text(
                           "Note:",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 20,
+                            fontSize: screenWidth * 0.040,
                             fontWeight: FontWeight.w600,
                             fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                           ),
                         ),
-                        SizedBox(height: 5),
+                        SizedBox(height: screenHeight * 0.010),
                         TextButton(
                           onPressed: () {
                             Navigator.push(
@@ -414,13 +418,13 @@ class _CreateStudentIDState extends State<CreateStudentID> {
                             "Teacher's Sign Up Page",
                             style: TextStyle(
                               color: Colors.blue.shade700,
-                              fontSize: 16,
+                              fontSize: screenWidth * 0.040,
                               fontWeight: FontWeight.w600,
                               fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
                             ),
                           ),
                         ),
-                        SizedBox(height: 35),
+                        SizedBox(height: screenHeight * 0.020),
                       ],
                     ),
                   ),

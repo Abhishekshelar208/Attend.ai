@@ -159,7 +159,8 @@ class _AddAttendanceState extends State<AddAttendance> {
                               "CN",
                               "IP",
                               "TCS",
-                              "DWM"
+                              "DWM",
+                              "PCE"
                             ].map((lecture) {
                               return DropdownMenuItem(
                                 value: lecture,
