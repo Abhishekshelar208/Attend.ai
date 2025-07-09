@@ -7,6 +7,7 @@ import 'package:krishna/ui/search.dart';
 import 'package:krishna/ui/profile.dart';
 import 'package:krishna/ui/teacherProfile.dart';
 
+import '../attendance/home_screen.dart';
 import 'teacher_home.dart';
 import 'like.dart';
 
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static final List<Widget> _pages = <Widget>[
     TeacherHomePage(),
     LikePage(),
-    RulesPage(),
+    HomeScreenForQuickAttendnace(),
     TeacherProfilePage(),
   ];
 
