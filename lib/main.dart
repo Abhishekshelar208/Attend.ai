@@ -1,6 +1,6 @@
 // lib/main.dart
 
-
+//this is my final version
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +9,8 @@ import 'package:krishna/ui/splash_screen.dart';
 
 import 'firebase_options.dart';
 import 'gsheets/gsheet_setup.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
